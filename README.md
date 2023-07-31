@@ -7,6 +7,7 @@ other version, it's should be changed by yourself.
 Notification：
 1 The icons path could be changed. The icons path is searched by environment path InfluxIcons.
   Code is as following.
+  
    public static ImageIcon getImageIcon(String iconName){
         String path = ICONPATH+iconName;
 
