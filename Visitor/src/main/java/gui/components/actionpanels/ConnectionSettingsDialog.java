@@ -1,6 +1,7 @@
 package gui.components.actionpanels;
 
 import com.influxdb.client.InfluxDBClient;
+import com.jcraft.jsch.ChannelSftp;
 import datamodel.InfluxDBConnection;
 import facility.InfluxDBFacility;
 import gui.common.EnhancedJPanel;
@@ -11,6 +12,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+
 
 public class ConnectionSettingsDialog extends JDialog implements ActionListener{
 
@@ -19,6 +27,7 @@ public class ConnectionSettingsDialog extends JDialog implements ActionListener{
 	private JButton pingButton;
 	private JButton testButton;
 	private JButton saveButton;
+	private JButton getFileButton;
 
 	private JTextField nameField;
 	private JTextField addresField;
@@ -82,15 +91,16 @@ public class ConnectionSettingsDialog extends JDialog implements ActionListener{
 		EnhancedJPanel bottomPenel = new EnhancedJPanel();
 		double border = 5;
 		double size [][] = {
-        		{border,0.25,border,0.25, border,0.25, border,0.25,border},
+        		{border,0.2,border,0.2,border,0.2, border,0.2, border,0.2,border},
                 {border,20,border}
         };
 		
 		bottomPenel.setLayout(new TableLayout(size));
-		bottomPenel.add(testButton,   "1,1");
-		bottomPenel.add(pingButton,   "3,1");
-		bottomPenel.add(saveButton,   "5,1");
-		bottomPenel.add(cancelButton, "7,1");
+		bottomPenel.add(getFileButton,   "1,1");
+		bottomPenel.add(testButton,   "3,1");
+		bottomPenel.add(pingButton,   "5,1");
+		bottomPenel.add(saveButton,   "7,1");
+		bottomPenel.add(cancelButton, "9,1");
 		
 		// TODO Auto-generated method stub
 		return bottomPenel;
@@ -184,6 +194,9 @@ public class ConnectionSettingsDialog extends JDialog implements ActionListener{
 		saveButton = new JButton("Save");
 		saveButton.addActionListener(this);
 
+		getFileButton = new JButton("ID File");
+		getFileButton.addActionListener(this);
+
 		nameField 		= new JTextField();
 		addresField 	= new JTextField();
 		databaseField 	= new JTextField();
@@ -206,7 +219,7 @@ public class ConnectionSettingsDialog extends JDialog implements ActionListener{
 		connection.setDatabase(databaseField.getText());
 		connection.setIpAddresss(addresField.getText());
 		connection.setPort(Integer.parseInt(portField.getText()));
-		connection.setPassword(passwordField.getText());
+		connection.setPassword(new String(passwordField.getPassword()));
 		connection.setConnectionName(nameField.getText());
 		connection.setConnectionName(nameField.getText());
 		connection.setUseSLL(sllCheckBox.isSelected());
@@ -240,5 +253,31 @@ public class ConnectionSettingsDialog extends JDialog implements ActionListener{
 			parentWindow.addConnection(connection);
 			dispose();
 		}
+		if (event.getSource().equals(getFileButton)){
+			boolean ret = getFile();
+			if(ret)
+				JOptionPane.showMessageDialog(this, "Get file success!","Success", JOptionPane.INFORMATION_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(this, "Get file failed!","Failed", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
+
+
+	public boolean getFile(){
+
+		SftpUtil sftpUtil = new SftpUtil();
+		sftpUtil.setServerPort(addresField.getText(),Integer.valueOf(portField.getText()));
+
+
+		sftpUtil.downloadFile();
+
+
+		return true;
+	}
+
+
+
+
+
+
 }

@@ -1,5 +1,6 @@
 package gui.components.actionpanels;
 
+import com.influxdb.client.InfluxDBClient;
 import datamodel.InfluxDBConnection;
 import facility.InfluxDBFacility;
 import gui.components.InfluxDBTreePanel;
@@ -39,18 +40,21 @@ public class ManageConnectionsDialog extends EnhancedDialog implements ActionLis
 		super(parent, "Manage InfluxDB Connections", true, "Connect", "Cancel");
 
 		treepanelReference = treepanel;
-		
-		createButton = new JButton("Create");
+		Font font = new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 12);
+		createButton = new JButton("´´½¨");
 		createButton.setIcon(GuiToolkit.getIcon("CreateConnection.png"));
 		createButton.addActionListener(this);
+		createButton.setFont(font);
 
-		editButton = new JButton("Edit");
+		editButton = new JButton("±à¼­");
 		editButton.setIcon(GuiToolkit.getIcon("EditConnection.png"));
 		editButton.addActionListener(this);
+		editButton.setFont(font);
 
-		removeButton = new JButton("Remove");
+		removeButton = new JButton("É¾³ý");
 		removeButton.setIcon(GuiToolkit.getIcon("Disconnect.png"));
 		removeButton.addActionListener(this);
+		removeButton.setFont(font);
 
 		EnhancedJPanel buttonsPanel = layoutTopButtonsPanel();
 		connectionsTable = new ConnectionsTable();
@@ -203,7 +207,11 @@ public class ManageConnectionsDialog extends EnhancedDialog implements ActionLis
 			InfluxDBConnection influxDBConnection = (InfluxDBConnection) connectionsTable.getAllRowsVector()
 					.get(selectedRowIndex);
 			InfluxDBFacility facility = InfluxDBFacility.getFacilityReference();
-			facility.getInfluxDB(influxDBConnection);
+			InfluxDBClient client = facility.getInfluxDB(influxDBConnection);
+			if(client == null){
+				JOptionPane.showMessageDialog(null,"Connect failed","Failed",0);
+				return;
+			}
 			treepanelReference.addInfluxDBServer(influxDBConnection);
 			dispose();
 		}

@@ -12,6 +12,7 @@ import datamodel.InfluxDBMeasuramet;
 import datamodel.InfluxDBTreeElement;
 import facility.InfluxDBFacility;
 import gui.common.EnhancedJPanel;
+import gui.components.actionpanels.GMapID;
 import gui.components.actionpanels.NewQueryActionPanel;
 import gui.components.actions.*;
 import info.clearthought.layout.TableLayout;
@@ -25,9 +26,12 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+
 
 
 public class InfluxDBTreePanel extends EnhancedJPanel {
@@ -55,6 +59,7 @@ public class InfluxDBTreePanel extends EnhancedJPanel {
 		add(scrollPane, "1,1");
 
 		tree.addMouseListener(new InfluxDBTreeMouseListener(tree, this));
+		GMapID.read();
 
 	}
 
@@ -63,7 +68,6 @@ public class InfluxDBTreePanel extends EnhancedJPanel {
 		if (paths != null) {
 			InfluxDBTreeNode selectedNode = (InfluxDBTreeNode) paths[0].getLastPathComponent();
 			return (InfluxDBTreeElement) selectedNode.getUserObject();
-
 		} else {
 			return null;
 		}
@@ -100,21 +104,29 @@ public class InfluxDBTreePanel extends EnhancedJPanel {
 	private void createDatabaseNode(String databaseName,InfluxDBConnection influxDBConnection, InfluxDBFacility facility, InfluxDBTreeNode server) {
 		InfluxDBDataBase influxDBDataBase = new InfluxDBDataBase(databaseName, influxDBConnection);
 		InfluxDBTreeNode database = new InfluxDBTreeNode(influxDBDataBase);
-		String queryString = "import \"influxdata/influxdb/schema\"\n" +
-				"schema.tagValues(bucket: \"" + databaseName + "\", tag: \"attroid\")";
+		String queryString = "import \"influxdata/influxdb/schema\"\n"
+				           + "schema.tagValues(bucket: \"" + databaseName + "\", tag: \"attroid\")";
 		System.out.printf("query string is %s\n",queryString);
 		List<FluxTable> queryResult = facility.query(queryString,
 				databaseName,
 				influxDBConnection);
 		if (queryResult != null) {
+			String charset = "GB2312";
 			List<FluxRecord> results = queryResult.get(0).getRecords();
 			if (results != null) {
 				for (FluxRecord resut : results) {
+					//¡ä?¡ä|??DDDT??
+					String name = GMapID.gIDtoName.get(resut.getValue().toString());
+					if(name == null){
+						name = resut.getValue().toString();
+					}
+
+
+					//System.out.println("name is " + name);
 					InfluxDBTreeNode measurement = new InfluxDBTreeNode(
 							//Here, the result value could be changed duo to different type of measurement
 							//Ringo 2023-07-25
-							new InfluxDBMeasuramet(resut.getValue().toString(), database.toString(),
-									influxDBConnection));
+							new InfluxDBMeasuramet(name, database.toString(),influxDBConnection));
 					database.add(measurement);
 
 				}

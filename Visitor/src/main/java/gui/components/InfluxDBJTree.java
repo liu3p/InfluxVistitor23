@@ -1,7 +1,6 @@
 package gui.components;
 
-import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.*;
 
 import javax.swing.Icon;
 import javax.swing.JTree;
@@ -27,6 +26,10 @@ public class InfluxDBJTree extends JTree {
 		UIManager.put("Tree.selectedIcon", new IconUIResource(new NodeIcon('+')));
 
 		InfluxDBStudioCellRenderer influxCellRenderer = new InfluxDBStudioCellRenderer();
+
+		Font font = new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 11);
+		this.setFont(font);
+		influxCellRenderer.setFont(font);
 
 		setShowsRootHandles(true);
 		setCellRenderer(influxCellRenderer);

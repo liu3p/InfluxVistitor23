@@ -50,6 +50,8 @@ public class QueryResultTable extends EnhancedTable {
 		header.setBackground(Color.LIGHT_GRAY);
 		setTableHeader(header);
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+		//имик?иож╠?3?бубф?гд
 	}
 
 	@Override

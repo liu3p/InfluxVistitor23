@@ -7,6 +7,7 @@ import datamodel.InfluxDBMeasuramet;
 import datamodel.InfluxDBTreeElement;
 import gui.components.InfluxDBTreePanel;
 import gui.components.InfluxDBWorkArea;
+import gui.components.actionpanels.GMapID;
 import gui.components.actionpanels.NewQueryActionPanel;
 
 public class NewQueryAction extends BasicAbstractAction{
@@ -25,6 +26,10 @@ public class NewQueryAction extends BasicAbstractAction{
     	if (treeElement != null) {
         	if (treeElement.getClass().equals(InfluxDBMeasuramet.class)) {
         		measuramentName = treeElement.toString();
+				measuramentName = GMapID.gNametoID.get(measuramentName);
+				if(measuramentName == null || measuramentName.length() < 1){
+					measuramentName = treeElement.toString();
+				}
         		database = ((InfluxDBMeasuramet)treeElement).getDatabase();
         		
         	}

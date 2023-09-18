@@ -25,6 +25,7 @@ public class NewQueryActionPanel extends ActionPanel implements ActionListener {
 	private ButtonPanel buttonPanel;
 	private JButton runQueryButton;
 	private JButton clearButton;
+	private JButton ExportButton;
 	private JTabbedPane bottomPanel;
 	private long responseTime;
 
@@ -50,6 +51,8 @@ public class NewQueryActionPanel extends ActionPanel implements ActionListener {
 
 	private void initComponets() {
 
+		Font font = new Font("?бщииик??oи▓", Font.PLAIN, 12);
+
 		mainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		mainPanel.setDividerSize(5);
 		String queryString = "from(bucket: \""+ databaseName +"\")\n" +
@@ -62,15 +65,22 @@ public class NewQueryActionPanel extends ActionPanel implements ActionListener {
 
 		textArea.setPreferredSize(new Dimension(600, 600));
 		messagelabel = new JLabel();
-		buttonPanel = new ButtonPanel(30, 5, 2, 5);
-		clearButton = new JButton("Clear results");
+		buttonPanel = new ButtonPanel(30, 5, 3, 5);
+		clearButton = new JButton("??3y?ив1?");
+		clearButton.setFont(font);
 		clearButton.setIcon(GuiToolkit.getIcon("DropMeasurement.png"));
 		clearButton.addActionListener(this);
-		runQueryButton = new JButton("Run Query");
+		runQueryButton = new JButton("2иж?бе");
+		runQueryButton.setFont(font);
 		runQueryButton.setIcon(GuiToolkit.getIcon("RunQuery.png"));
 		runQueryButton.addActionListener(this);
+		ExportButton = new JButton("ж╠?3??aCSV");
+		ExportButton.setFont(font);
+		//ExportButton.setIcon(GuiToolkit.getIcon("RunQuery.png"));
+		ExportButton.addActionListener(this);
 		buttonPanel.addButton(runQueryButton);
 		buttonPanel.addButton(clearButton);
+		buttonPanel.addButton(ExportButton);
 		bottomPanel = new JTabbedPane();
 	}
 
@@ -131,6 +141,15 @@ public class NewQueryActionPanel extends ActionPanel implements ActionListener {
 		return queryResult;
 	}
 
+
+	public void exportCSV(){
+		//get tables
+
+		//pop select list to choose table
+
+		//export to csv
+	}
+
 	@Override
 	public void runQuery(){
 		long timeInit = System.currentTimeMillis();
@@ -158,10 +177,15 @@ public class NewQueryActionPanel extends ActionPanel implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		if (actionEvent.getSource().equals(runQueryButton)) {
 			runQuery();
+			return;
 		}
 		if (actionEvent.getSource().equals(clearButton)) {
 			bottomPanel.removeAll();
 			messagelabel.setText("");
-		}		
+			return;
+		}
+		if(actionEvent.getSource().equals(ExportButton)){
+
+		}
 	}
 }
